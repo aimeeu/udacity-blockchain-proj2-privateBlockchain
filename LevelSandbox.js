@@ -3,14 +3,21 @@
 /===================================================*/
 
 const level = require('level');
-const chainDB = './chaindata';
+
 
 class LevelSandbox {
 
-    constructor() {
-        this.db = level(chainDB);
+    // use dbLocation with default for unit testing inclusion later
+    constructor(dbLocation = './chaindata') {
+        //You can specify json as a special value-encoding type,
+        // which allows you to use arbitrary JavaScript objects as values
+        var options = {
+            valueEncoding: 'json'
+        };
+        this.db = level(dbLocation, options);
     }
 
+    /*
     // Get data from levelDB with key (Promise)
     getLevelDBData(key){
         let self = this;
@@ -18,15 +25,25 @@ class LevelSandbox {
             // Add your code here, remember in Promises you need to resolve() or reject()
         });
     }
+     */
 
     // Add data to levelDB with key and value (Promise)
     addLevelDBData(key, value) {
         let self = this;
-        return new Promise(function(resolve, reject) {
-            // Add your code here, remember in Promises you need to resolve() or reject() 
+        console.log("***** LevelSandbox.addLevelDBData ");
+        return new Promise(function (resolve, reject) {
+            // Add your code here, remember in Promises you need to resolve() or reject()
+            self.db.put(key, value).then((result) => {
+                //console.log('addLevelDBData result: ', result);
+                resolve(result);
+            }).catch((err) => {
+                console.log('LevelSandbox.addLevelDBData ' + key + ' submission failed', err);
+                reject(err);
+            });
         });
     }
 
+    /*
     // Method that return the height
     getBlocksCount() {
         let self = this;
@@ -34,7 +51,129 @@ class LevelSandbox {
             // Add your code here, remember in Promises you need to resolve() or reject()
         });
     }
-        
+    */
+
+
+    //Rubric: getBlock(height) retrieves a block by height from LevelDB
+    getBlock(keyBlockHeight) {
+        // Because we are returning a promise, we will need this to be able to reference 'this' inside the Promise constructor
+        let self = this;
+        console.log("***** LevelSandbox.getBlock(keyBlockHeight) ");
+        return new Promise((resolve, reject) => {
+            self.db.get(keyBlockHeight).then((result) => {
+               // console.log('LevelSandbox.getBlock(keyBlockHeight) result: ', result);
+                let returnedBlock = JSON.parse(result);
+                resolve(returnedBlock);
+            }).catch((err) => {
+                if (err.type === 'NotFoundError') {
+                    resolve(undefined);
+                } else {
+                    console.log('LevelSandbox.getBlock(keyBlockHeight) Block ' + keyBlockHeight + ' get failed', err);
+                    reject(err);
+                }
+            });
+        });
+    };
+
+    // Rubric: addBlock(newBlock) function stores a new block in LevelDB
+    addBlock(newBlock) {
+        console.log('LevelSandbox.addBlock(newBlock): ', newBlock);
+        let self = this;
+        let key = newBlock.height;
+        let value = JSON.stringify(newBlock).toString();
+        //block.height is key, block is value
+        return new Promise((resolve, reject) => {
+            self.db.put(key, value).then((result) => {
+               // console.log('LevelSandbox.addBlock(newBlock) result: ', result);
+                resolve(result);
+            }).catch((err) => {
+                console.log('LevelSandbox.addBlock failed to add block ' + key + ' ; error: ', err);
+                reject(err);
+            });
+        });
+    };
+
+    // Counts all the Blocks in your chain and gives you as a result the total number of block in the chain
+    // remember that the genesis block has a height of zero
+    //retrieves current block height within the LevelDB chain.
+    /*
+    getBlockHeight() {
+        console.log('***** LevelSandbox.getBlockHeight *****');
+        let self = this;
+         let i = 0;
+        return new Promise((resolve, reject) => {
+            self.db.createKeyStream().on('data', (err) => {
+                i++;
+            }).on('error', function(err) {
+                console.log('LevelSandbox.getBlockHeight Unable to read data stream!', err);
+                reject(err);
+            }).on('close', function() {
+                console.log('LevelSandbox.getBlockHeight result:', i);
+                resolve(i);
+            });
+        });
+    }
+    */
+
+
+    getBlockHeight() {
+        console.log('***** LevelSandbox.getBlockHeight *****');
+        let self = this;
+        return new Promise((resolve, reject) => {
+            // The Map object holds key-value pairs and remembers the original insertion order of the keys.
+            let map = new Map();
+            //console.log('***** LevelSandbox.getBlockHeight db.createReadStream({reverse: true})*****');
+            self.db.createReadStream({reverse: true})
+                .on('data', function (data) {
+                   // console.log('***** LevelSandbox.getBlockHeight data found; reading stream');
+                    //console.log(data.key, '=', data.value);
+                    map.set(Number.parseInt((data.key), JSON.parse(data.value)));
+                })
+                .on('error', function (err) {
+                    if (err.type === 'NotFoundError') {
+                        console.log('***** LevelSandbox.getBlockHeight no data found; resolve(0)');
+                        resolve(0);
+                    } else {
+                        console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
+                        reject(err);
+                    }
+                })
+                .on('close', function () {
+                    //console.log('***** LevelSandbox.getBlockHeight stream closed; getting blockHeight from first key in map');
+                    let blockHeight = 0;
+                    // retrieve the first entry in the map, which should be the last block added to the database
+                    if (map.size !== 0) {
+                        var iterator1 = map.keys();
+                        blockHeight = Number.parseInt(iterator1.next().value);
+                        console.log("LevelSandbox.getBlockHeight map keys, first key: ", blockHeight);
+                    }
+                    resolve(blockHeight);
+                })
+                .on('end', function () {
+                    //console.log('***** LevelSandbox.getBlockHeight stream ended');
+                });
+        });
+    }
+
+    // returns a map of key, value for all the blocks in the database
+    getAllBlocks() {
+        console.log('***** LevelSandbox.getAllBlocks *****');
+        let self = this;
+        return new Promise((resolve, reject) => {
+            // The Map object holds key-value pairs and remembers the original insertion order of the keys.
+            let map = new Map();
+            self.db.createReadStream().on('data', (err) => {
+                //console.log(data.key, '=', data.value);
+                map.set(Number.parseInt((data.key), JSON.parse(data.value)));
+                //i++;
+            }).on('error', function (err) {
+                console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
+                reject(err);
+            }).on('close', function () {
+                resolve(map);
+            });
+        });
+    };
 
 }
 
