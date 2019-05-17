@@ -234,10 +234,7 @@ class Blockchain {
                         reject(msg);
                     }
                 }
-
-
             });
-
         });
     }
 
@@ -247,9 +244,19 @@ class Blockchain {
     _modifyBlock(height, block) {
         let self = this;
         return new Promise( (resolve, reject) => {
+            /*
             self.bd.addLevelDBData(height, JSON.stringify(block).toString()).then((blockModified) => {
                 resolve(blockModified);
             }).catch((err) => { console.log(err); reject(err)});
+            */
+            // 17 May 2019 modified to remove JSON.stringify because that is done in LevelSandbox
+            self.bd.addLevelDBData(height, block).then((blockModified) => {
+                console.log("_modifyBlock blockModified: ", blockModified);
+                resolve(blockModified);
+            }).catch((err) => {
+                console.log(err);
+                reject(err)
+            });
         });
     }
    

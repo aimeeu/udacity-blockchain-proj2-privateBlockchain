@@ -31,17 +31,41 @@ class LevelSandbox {
     addLevelDBData(key, value) {
         let self = this;
         console.log("***** LevelSandbox.addLevelDBData ");
+        /*
         return new Promise(function (resolve, reject) {
             // Add your code here, remember in Promises you need to resolve() or reject()
             self.db.put(key, value).then((result) => {
-                //console.log('addLevelDBData result: ', result);
-                resolve(result);
+                // result is always undefined
+                console.log('addLevelDBData result: ', result);
+                resolve(true);
             }).catch((err) => {
                 console.log('LevelSandbox.addLevelDBData ' + key + ' submission failed', err);
                 reject(err);
             });
         });
+        */
+        return self.addBlock(value);
     }
+
+    // Rubric: addBlock(newBlock) function stores a new block in LevelDB
+    addBlock(newBlock) {
+        console.log('LevelSandbox.addBlock(newBlock): ', newBlock);
+        let self = this;
+        let key = newBlock.height;
+        let value = JSON.stringify(newBlock).toString();
+        //block.height is key, block is value
+        return new Promise((resolve, reject) => {
+            self.db.put(key, value).then((result) => {
+                // result is always undefined
+                // console.log('LevelSandbox.addBlock(newBlock) result: ', result);
+                resolve(true);
+            }).catch((err) => {
+                console.log('LevelSandbox.addBlock failed to add block ' + key + ' ; error: ', err);
+                reject(err);
+            });
+        });
+    };
+
 
     /*
     // Method that return the height
@@ -75,23 +99,6 @@ class LevelSandbox {
         });
     };
 
-    // Rubric: addBlock(newBlock) function stores a new block in LevelDB
-    addBlock(newBlock) {
-        console.log('LevelSandbox.addBlock(newBlock): ', newBlock);
-        let self = this;
-        let key = newBlock.height;
-        let value = JSON.stringify(newBlock).toString();
-        //block.height is key, block is value
-        return new Promise((resolve, reject) => {
-            self.db.put(key, value).then((result) => {
-               // console.log('LevelSandbox.addBlock(newBlock) result: ', result);
-                resolve(result);
-            }).catch((err) => {
-                console.log('LevelSandbox.addBlock failed to add block ' + key + ' ; error: ', err);
-                reject(err);
-            });
-        });
-    };
 
     // Counts all the Blocks in your chain and gives you as a result the total number of block in the chain
     // remember that the genesis block has a height of zero
