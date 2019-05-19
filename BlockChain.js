@@ -30,7 +30,7 @@ const utils = require('./utils.js');
 class Blockchain {
 
     constructor() {
-        console.log('***** Blockchain constructor - creating new LevelSandbox *****');
+       // console.log('***** Blockchain constructor - creating new LevelSandbox *****');
         this.bd = new LevelSandbox.LevelSandbox();
         this.generateGenesisBlock();
     }
@@ -41,7 +41,7 @@ class Blockchain {
     // will not create the genesis block
     generateGenesisBlock(){
         // Add your code here
-        console.log('***** generateGenesisBlock *****');
+        //console.log('***** generateGenesisBlock *****');
         let self = this;
         //console.log('***** generateGenesisBlock calling self.getBlockHeight *****');
         self.getBlockHeight().then( (result) => {
@@ -61,7 +61,7 @@ class Blockchain {
                     console.log("generateGenesisBlock rejected self.bd.addBlock error: ", err);
                 });
             } else {
-                console.log('***** generateGenesisBlock NO GENESIS BLOCK CREATED; BLOCKHEIGHT: ', result);
+                console.log('***** generateGenesisBlock NO GENESIS BLOCK CREATED - BLOCKS EXIST');
             }
         }).catch((err) => {
             console.log("generateGenesisBlock generateGenesisBlock error: ", err);
@@ -73,7 +73,7 @@ class Blockchain {
     // the genesisBlock has a height of zero, so the last block in the chain will have a height of (totalChainLength - 1)
     // MUST RETURN A PROMISE FOR simpleChain02ValidateBlocks.js
     getBlockHeight() {
-        console.log('***** getBlockHeight *****');
+       // console.log('***** getBlockHeight *****');
         let self = this;
         return new Promise(function(resolve, reject) {
             // Add your code here, remember in Promises you need to resolve() or reject()
@@ -221,7 +221,7 @@ class Blockchain {
     validateChain() {
         // Add your code here
         let self = this;
-        console.log('***** BlockChain.validateChain *****');
+        //console.log('***** BlockChain.validateChain *****');
 
         // The Map object holds key-value pairs and remembers the original insertion order of the keys.
 
@@ -242,7 +242,7 @@ class Blockchain {
                     self.bd.getAllBlocks().then((chainMap) => {
                         if (chainMap.length === 0) {
                             let msg = "blockchain.validateChain retrieve all blocks returned an empty map!";
-                            console.log(msg);
+                            //console.log(msg);
                             errorLog.push(msg);
                             reject(errorLog);
                         }else {
@@ -259,7 +259,7 @@ class Blockchain {
                                             resolve(errorLog);
                                         } else {
                                             let msg = 'Block ' + key + ' failed currentBlock.hash === nextBlock.previousBlockHash';
-                                            console.log(msg, currentBlock.hash, nextBlock.previousBlockHash);
+                                            //console.log(msg, currentBlock.hash, nextBlock.previousBlockHash);
                                             reject(errorLog);
                                         }
                                     } else {
@@ -267,7 +267,7 @@ class Blockchain {
                                     }
                                 } else {
                                     let msg = 'Block ' + key + ' failed validateBlock';
-                                    console.log(msg);
+                                    //console.log(msg);
                                     errorLog.push(msg);
                                     reject(errorLog);
                                 }
@@ -299,7 +299,7 @@ class Blockchain {
             */
             // 17 May 2019 modified to remove JSON.stringify because that is done in LevelSandbox
             self.bd.addLevelDBData(height, block).then((blockModified) => {
-                console.log("_modifyBlock blockModified: ", blockModified);
+                //console.log("_modifyBlock blockModified: ", blockModified);
                 resolve(blockModified);
             }).catch((err) => {
                 console.log(err);

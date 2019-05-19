@@ -80,7 +80,7 @@ class LevelSandbox {
                 // console.log('LevelSandbox.addBlock(newBlock) result: ', result);
                 resolve(true);
             }).catch((err) => {
-                console.log('LevelSandbox.addBlock failed to add block ' + key + ' ; error: ', err);
+                //console.log('LevelSandbox.addBlock failed to add block ' + key + ' ; error: ', err);
                 reject(err);
             });
         });
@@ -112,7 +112,7 @@ class LevelSandbox {
                 if (err.type === 'NotFoundError') {
                     resolve(undefined);
                 } else {
-                    console.log('LevelSandbox.getBlock(keyBlockHeight) Block ' + keyBlockHeight + ' get failed', err);
+                    //console.log('LevelSandbox.getBlock(keyBlockHeight) Block ' + keyBlockHeight + ' get failed', err);
                     reject(err);
                 }
             });
@@ -158,10 +158,10 @@ class LevelSandbox {
                 })
                 .on('error', function (err) {
                     if (err.type === 'NotFoundError') {
-                        console.log('***** LevelSandbox.getBlockHeight no data found; resolve(0)');
+                       // console.log('***** LevelSandbox.getBlockHeight no data found; resolve(0)');
                         resolve(0);
                     } else {
-                        console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
+                        //console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
                         reject(err);
                     }
                 })
@@ -199,10 +199,10 @@ class LevelSandbox {
                 })
                 .on('error', function (err) {
                     if (err.type === 'NotFoundError') {
-                        console.log('***** LevelSandbox.getAllBlocks no data found; resolve the empty map');
+                        //console.log('***** LevelSandbox.getAllBlocks no data found; resolve the empty map');
                         resolve(map);
                     } else {
-                        console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
+                        //console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
                         reject(err);
                     }
                 })

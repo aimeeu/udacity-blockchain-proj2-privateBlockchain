@@ -31,7 +31,7 @@ const Block = require('./Block.js');
 let myBlockChain = new BlockChain.Blockchain();
 
 setTimeout(function () {
-    console.log("***** simpleChain.setTimeout ...")
+    //console.log("***** simpleChain.setTimeout ...")
 }, 10000);
 
 /******************************************
@@ -42,15 +42,18 @@ setTimeout(function () {
 (function theLoop (i) {
     console.log("***** simpleChain.theLoop...");
 	setTimeout(function () {
-        console.log("***** simpleChain.theLoop creating new block...");
+        //console.log("***** simpleChain.theLoop creating new block...");
 		let blockTest = new Block.Block("Test Block - " + (i + 1));
 		// Be careful this only will work if your method 'addBlock' in the Blockchain.js file return a Promise
-        console.log("***** simpleChain.theLoop calling myBlockChain.addBlock...");
+        //console.log("***** simpleChain.theLoop calling myBlockChain.addBlock...");
 		myBlockChain.addBlock(blockTest).then((result) => {
-            console.log("***** simpleChain.theLoop logging result from addBlock...");
+           // console.log("***** simpleChain.theLoop logging result from addBlock...");
 			console.log(result);
 			i++;
 			if (i < 10) theLoop(i);
-		});
+			myBlockChain._printAllBlocks();
+		}).catch( (err) => {
+		    console.log('Error during loop to add blocks ', err);
+        });
 	}, 10000);
   })(0);
