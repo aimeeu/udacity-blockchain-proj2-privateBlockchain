@@ -144,7 +144,7 @@ class LevelSandbox {
 
 
     getBlockHeight() {
-        console.log('***** LevelSandbox.getBlockHeight *****');
+        //console.log('***** LevelSandbox.getBlockHeight *****');
         let self = this;
         return new Promise((resolve, reject) => {
             // The Map object holds key-value pairs and remembers the original insertion order of the keys.

@@ -32,13 +32,13 @@ I broke simpleChain.js into three files:
 
 ```bash
 
-aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test$ git clone https://github.com/aimeeu/udacity-blockchain-proj2-privateBlockchain.git
+aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test$  git clone https://github.com/aimeeu/udacity-blockchain-proj2-privateBlockchain.git
 Cloning into 'udacity-blockchain-proj2-privateBlockchain'...
-remote: Enumerating objects: 45, done.
-remote: Counting objects: 100% (45/45), done.
-remote: Compressing objects: 100% (28/28), done.
-remote: Total 45 (delta 23), reused 32 (delta 13), pack-reused 0
-Unpacking objects: 100% (45/45), done.
+remote: Enumerating objects: 51, done.
+remote: Counting objects: 100% (51/51), done.
+remote: Compressing objects: 100% (30/30), done.
+remote: Total 51 (delta 28), reused 37 (delta 17), pack-reused 0
+Unpacking objects: 100% (51/51), done.
 aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test$ cd u*
 aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ ls
 BlockChain.js    notes.txt          README.md                      simpleChain02ValidateBlocks.js  utils.js
@@ -57,10 +57,10 @@ Thank you for using level!
 If you rely on this package, please consider supporting our open collective:
 > https://opencollective.com/level/donate
 
-npm WARN project_2@1.0.0 No description
 npm WARN project_2@1.0.0 No repository field.
 
-added 78 packages from 60 contributors in 1.034s
+added 78 packages from 60 contributors in 1.011s
+
 
 
 

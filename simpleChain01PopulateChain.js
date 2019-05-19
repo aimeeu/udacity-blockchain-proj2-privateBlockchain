@@ -51,9 +51,10 @@ setTimeout(function () {
 			console.log(result);
 			i++;
 			if (i < 10) theLoop(i);
-			myBlockChain._printAllBlocks();
 		}).catch( (err) => {
 		    console.log('Error during loop to add blocks ', err);
         });
 	}, 10000);
   })(0);
+
+
