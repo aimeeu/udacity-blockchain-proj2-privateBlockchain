@@ -71,7 +71,7 @@ class Blockchain {
     // Get block height, it is a helper method that return the height of the blockchain
     // Counts all the Blocks in your chain and give you as a result the last height in your chain
     // the genesisBlock has a height of zero, so the last block in the chain will have a height of (totalChainLength - 1)
-    // MUST RETURN A PROMISE FOR simpleChain02Validate.js
+    // MUST RETURN A PROMISE FOR simpleChain02ValidateBlocks.js
     getBlockHeight() {
         console.log('***** getBlockHeight *****');
         let self = this;
@@ -96,10 +96,10 @@ class Blockchain {
     // Add new block
     // Adds a new block into the chain, to do that you need to assign the corresponding height, hash,
     // previousBlockHash and timeStamp to your block.
-    // must return a Promise to work with simpleChain02Validate.js
+    // must return a Promise to work with simpleChain02ValidateBlocks.js
     addBlock(newBlock) {
         let self = this;
-        console.log('***** blockchain.addBlock(block) ***** ');
+        //console.log('***** blockchain.addBlock(block) ***** ');
         // Add your code here
         // fetch previous block to get hash
 
@@ -128,7 +128,7 @@ class Blockchain {
                     newBlock.setHash(utils.generateHashFor(newBlock));
 
                     // db.addBlock returns a Promise
-                    console.log("blockchain.addBlock(block) calling self.bd.addBlock(newBlock): ", newBlock);
+                    //console.log("blockchain.addBlock(block) calling self.bd.addBlock(newBlock): ", newBlock);
                     self.bd.addBlock(newBlock).then( (result) => {
                         //console.log("blockchain.addBlock(block) self.bd.addBlock result: ", result);
                         resolve(result);
@@ -152,7 +152,7 @@ class Blockchain {
     // must return a Promise
     getBlock(height) {
         // Add your code here
-        console.log('***** blockchain.getBlock(height) ***** ');
+        //console.log('***** blockchain.getBlock(height) ***** ');
         let self = this;
         return new Promise(function(resolve, reject) {
             // Add your code here, remember in Promises you need to resolve() or reject()
@@ -174,7 +174,7 @@ class Blockchain {
     // Rubric: The validation should verify that the hash stored in the block is the same as the hash recalculated.
     validateBlock(height) {
         // Add your code here
-        console.log('***** blockchain.validateBlock(height) ***** ');
+        //console.log('***** blockchain.validateBlock(height) ***** ');
         let self = this;
         return new Promise(function(resolve, reject) {
             // Add your code here, remember in Promises you need to resolve() or reject()
@@ -188,7 +188,7 @@ class Blockchain {
                 if (self.checkForValidBlockHash(returnedBlock)) {
                     resolve(true);
                 } else {
-                    reject('Block ' + height + ' is not a valid block!');
+                    reject('!!!!! Blockchain.validateBlock Block ' + height + ' is not a valid block!');
                 }
             }).catch((err) => {
                 console.log("blockchain.getBlock(height) Failed to retrieve block by height: ",  height);
@@ -226,13 +226,15 @@ class Blockchain {
         // The Map object holds key-value pairs and remembers the original insertion order of the keys.
 
         return new Promise(function(resolve, reject) {
+            let errorLog = [];
             self.getBlockHeight().then( (blockHeight) => {
                 if (blockHeight === 0){
                     //only one block in chain, so only validate the single block; do not check previous hash
                     self.validateBlock(0).then( (result) => {
-                        resolve(result);
+                        resolve(errorLog);
                     }).catch( (err) => {
-                        console.log("blockchain.validateChain height=0; failed to validate block");
+                        console.log("blockchain.validateChain height=0; failed to validate block err: ", err);
+                        errorLog.push(err);
                         reject(err);
                     });
                 } else {
@@ -241,7 +243,8 @@ class Blockchain {
                         if (chainMap.length === 0) {
                             let msg = "blockchain.validateChain retrieve all blocks returned an empty map!";
                             console.log(msg);
-                            reject(msg);
+                            errorLog.push(msg);
+                            reject(errorLog);
                         }else {
                             for (var [key, currentBlock] of chainMap) {
                                 // validate block
@@ -253,23 +256,25 @@ class Blockchain {
                                         let nextKey = (key + 1);
                                         let nextBlock = chainMap.get(nextKey);
                                         if (currentBlock.hash === nextBlock.previousBlockHash) {
-                                            resolve(true);
+                                            resolve(errorLog);
                                         } else {
                                             let msg = 'Block ' + key + ' failed currentBlock.hash === nextBlock.previousBlockHash';
                                             console.log(msg, currentBlock.hash, nextBlock.previousBlockHash);
-                                            reject(msg);
+                                            reject(errorLog);
                                         }
                                     } else {
                                         resolve(true);
                                     }
                                 } else {
-                                    console.log('Block ' + key + ' failed validateBlock');
-                                    reject(msg);
+                                    let msg = 'Block ' + key + ' failed validateBlock';
+                                    console.log(msg);
+                                    errorLog.push(msg);
+                                    reject(errorLog);
                                 }
                             }
                         }
                     }).catch((err) => {
-                        console.log("blockchain.validateChain Failed to retrieve all blocks");
+                        console.log("blockchain.validateChain error: ", err);
                         reject(err);
                     });
                 }
@@ -302,6 +307,20 @@ class Blockchain {
             });
         });
     }
+
+
+    _printAllBlocks() {
+            console.log('***** _printAllBlocks *****');
+                //console.log('***** getBlockHeight calling levelSandbox.getBlockHeight *****');
+                this.bd.getAllBlocks().then((chainMap) => {
+                    for (var [key, currentBlock] of chainMap) {
+                        console.log(currentBlock);
+                    }
+                }).catch((err) => {
+                    console.log(" _printAllBlocks error: ", err);
+                });
+        }
+
    
 }
 

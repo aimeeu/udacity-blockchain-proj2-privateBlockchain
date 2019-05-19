@@ -27,58 +27,49 @@
  */
 
 const BlockChain = require('./BlockChain.js');
-
 let myBlockChain = new BlockChain.Blockchain();
 
 /** Tampering a Block this is only for the purpose of testing the validation methods */
-myBlockChain.getBlock(5).then((block) => {
-	let blockAux = block;
-	blockAux.body = "Tampered Block";
-	myBlockChain._modifyBlock(blockAux.height, blockAux)
-		.then((blockModified) => {
-			if(blockModified){
-				myBlockChain.validateBlock(blockAux.height).then((valid) => {
-					console.log(`######## Block #${blockAux.height}, is valid? = ${valid}`);
-				})
-				.catch((error) => {
-					console.log(error);
-				})
-			} else {
-				console.log("######## The Block wasn't modified");
-			}
-		}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
 
+myBlockChain.getBlock(5).then((block) => {
+    let blockAux = block;
+    blockAux.body = "Tampered Block";
+    myBlockChain._modifyBlock(blockAux.height, blockAux)
+        .then((blockModified) => {
+            if (blockModified) {
+                myBlockChain.validateBlock(blockAux.height)
+                    .then((valid) => {
+                        console.log(" MODIFY BLOCK 5 ");
+                        console.log(`######## Block #${blockAux.height}, is valid? = ${valid}`);
+                        myBlockChain._printAllBlocks();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } else {
+                console.log("######## The Block wasn't modified");
+            }
+        }).catch((err) => {
+        console.log(err);
+    });
+}).catch((err) => {
+    console.log(err);
+});
 
 myBlockChain.getBlock(6).then((block) => {
-	let blockAux = block;
-	blockAux.previousBlockHash = "jndininuud94j9i3j49dij9ijij39idj9oi";
-	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
-		if(blockModified){
-			console.log("######## The Block was modified");
-		} else {
-			console.log("######## The Block wasn't modified");
-		}
-	}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
-
-
-/***********************************************
- ***************** Validate Chain  *************
- ***********************************************/
-
-
-// Be careful this only will work if `validateChain` method in Blockchain.js file return a Promise
-myBlockChain.validateChain().then((errorLog) => {
-    if(errorLog.length > 0){
-        console.log("######## SUCCESS - VALIDATION INDICATED THAT CHAIN HAS BEEN TAMPERED WITH. The chain is not valid:");
-        errorLog.forEach(error => {
-            console.log(error);
-        });
-    } else {
-        console.log("######## SOMETHING IS ROTTEN IN THE STATE OF DENMARK!! No errors found. The chain is Valid!");
-    }
-})
-    .catch((error) => {
-        console.log(error);
+    let blockAux = block;
+    blockAux.previousBlockHash = "jndininuud94j9i3j49dij9ijij39idj9oi";
+    myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
+        console.log(" MODIFY BLOCK 6 ");
+        if (blockModified) {
+            console.log("######## The Block was modified");
+        } else {
+            console.log("######## The Block wasn't modified");
+        }
+        myBlockChain._printAllBlocks();
+    }).catch((err) => {
+        console.log(err);
     });
+}).catch((err) => {
+    console.log(err);
+});
