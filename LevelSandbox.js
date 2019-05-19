@@ -1,3 +1,23 @@
+/*
+  ===============LICENSE_START=======================================================
+  Apache-2.0
+  ===================================================================================
+  Copyright (C) 2019 Aimee Ukasick. All rights reserved.
+  ===================================================================================
+  This software file is distributed by Aimee Ukasick
+  under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  This file is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ===============LICENSE_END=========================================================
+*/
+
 /* ===== Persist data with LevelDB ==================
 |  Learn more: level: https://github.com/Level/level |
 /===================================================*/
@@ -169,19 +189,32 @@ class LevelSandbox {
         return new Promise((resolve, reject) => {
             // The Map object holds key-value pairs and remembers the original insertion order of the keys.
             let map = new Map();
-            self.db.createReadStream().on('data', (err) => {
-                //console.log(data.key, '=', data.value);
-                map.set(Number.parseInt((data.key), JSON.parse(data.value)));
-                //i++;
-            }).on('error', function (err) {
-                console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
-                reject(err);
-            }).on('close', function () {
-                resolve(map);
-            });
+            self.db.createReadStream({reverse: false})
+                .on('data', function (data) {
+                    console.log('***** LevelSandbox.getAllBlocks data found; reading stream');
+                    let key = Number.parseInt(data.key);
+                    let block = JSON.parse(data.value);
+                    console.log(key, '=', block);
+                    map.set(key, block);
+                })
+                .on('error', function (err) {
+                    if (err.type === 'NotFoundError') {
+                        console.log('***** LevelSandbox.getAllBlocks no data found; resolve the empty map');
+                        resolve(map);
+                    } else {
+                        console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
+                        reject(err);
+                    }
+                })
+                .on('close', function () {
+                    //console.log('***** LevelSandbox.getBlockHeight stream closed; getting blockHeight from first key in map');
+                    resolve(map);
+                })
+                .on('end', function () {
+                    //console.log('***** LevelSandbox.getBlockHeight stream ended');
+                });
         });
-    };
-
+    }
 }
 
 module.exports.LevelSandbox = LevelSandbox;

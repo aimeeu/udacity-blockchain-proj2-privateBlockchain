@@ -1,0 +1,84 @@
+/*
+  ===============LICENSE_START=======================================================
+  Apache-2.0
+  ===================================================================================
+  Copyright (C) 2019 Aimee Ukasick. All rights reserved.
+  ===================================================================================
+  This software file is distributed by Aimee Ukasick
+  under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  This file is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ===============LICENSE_END=========================================================
+*/
+
+
+/*
+ * This file contains functions to tamper with the blockchain and then test the validity
+ * of the blockchain.
+ * The blockchain should be populated by running simpleChain01PopulateChain.js
+ * Ideally all tests should be done using a unit test framework!
+ */
+
+const BlockChain = require('./BlockChain.js');
+
+let myBlockChain = new BlockChain.Blockchain();
+
+/** Tampering a Block this is only for the purpose of testing the validation methods */
+myBlockChain.getBlock(5).then((block) => {
+	let blockAux = block;
+	blockAux.body = "Tampered Block";
+	myBlockChain._modifyBlock(blockAux.height, blockAux)
+		.then((blockModified) => {
+			if(blockModified){
+				myBlockChain.validateBlock(blockAux.height).then((valid) => {
+					console.log(`######## Block #${blockAux.height}, is valid? = ${valid}`);
+				})
+				.catch((error) => {
+					console.log(error);
+				})
+			} else {
+				console.log("######## The Block wasn't modified");
+			}
+		}).catch((err) => { console.log(err);});
+}).catch((err) => { console.log(err);});
+
+
+myBlockChain.getBlock(6).then((block) => {
+	let blockAux = block;
+	blockAux.previousBlockHash = "jndininuud94j9i3j49dij9ijij39idj9oi";
+	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
+		if(blockModified){
+			console.log("######## The Block was modified");
+		} else {
+			console.log("######## The Block wasn't modified");
+		}
+	}).catch((err) => { console.log(err);});
+}).catch((err) => { console.log(err);});
+
+
+/***********************************************
+ ***************** Validate Chain  *************
+ ***********************************************/
+
+
+// Be careful this only will work if `validateChain` method in Blockchain.js file return a Promise
+myBlockChain.validateChain().then((errorLog) => {
+    if(errorLog.length > 0){
+        console.log("######## SUCCESS - VALIDATION INDICATED THAT CHAIN HAS BEEN TAMPERED WITH. The chain is not valid:");
+        errorLog.forEach(error => {
+            console.log(error);
+        });
+    } else {
+        console.log("######## SOMETHING IS ROTTEN IN THE STATE OF DENMARK!! No errors found. The chain is Valid!");
+    }
+})
+    .catch((error) => {
+        console.log(error);
+    });
