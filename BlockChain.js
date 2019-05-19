@@ -56,7 +56,7 @@ class Blockchain {
                 b.setHash(utils.generateHashFor(b));
                 //console.log('***** generateGenesisBlock calling self.bd.addBlock ');
                 self.bd.addBlock(b).then( (result) => {
-                    //console.log("generateGenesisBlock fulfilled self.bd.addBlock result: ", result);
+                   console.log("generateGenesisBlock fulfilled: ", result);
                 }).catch((err) => {
                     console.log("generateGenesisBlock rejected self.bd.addBlock error: ", err);
                 });

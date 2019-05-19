@@ -78,7 +78,7 @@ class LevelSandbox {
             self.db.put(key, value).then((result) => {
                 // result is always undefined
                 // console.log('LevelSandbox.addBlock(newBlock) result: ', result);
-                resolve(true);
+                resolve(newBlock);
             }).catch((err) => {
                 //console.log('LevelSandbox.addBlock failed to add block ' + key + ' ; error: ', err);
                 reject(err);
