@@ -4,14 +4,14 @@
 
 
 - Identify the basic data model for a Blockchain application
-- Use LevelDB to persist the Blockchain data
+- Use [level](https://github.com/Level/level) to persist the Blockchain data in LevelDB
 - Write functions for basic operations in the Blockchain
 
-Seed code: https://github.com/udacity/nd1309-work-code/tree/master/Course_Blockchain_Data/Project_2_es6_starter_code
+[Seed code](https://github.com/udacity/nd1309-work-code/tree/master/Course_Blockchain_Data/Project_2_es6_starter_code) was cloned from the Udacity repo.
 
 # Modifications
 
-I broke simpleChain.js into three files:
+I broke simpleChain.js into three files for easier testing:
 
 1. simpleChain01PopulateChain.js    This file contains the function to populate the blockchain and store in the database; this must be run first
 2. simpleChain02ValidateBlocks.js  This file contains functions to validate the blocks and the chain as a whole
@@ -128,9 +128,23 @@ aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-priv
 ## Tamper with Blocks
 ```bash
 
+aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ node simpleChain03TamperBlocks.js
+ MODIFY BLOCK 5 
+ MODIFY BLOCK 6 
+######## BLOCK 6 was modified
+!!!!! Blockchain.validateBlock Block 5 is not a valid block!
+***** generateGenesisBlock NO GENESIS BLOCK CREATED - BLOCKS EXIST
+
 ```
 
 ## Validate Chain
 ```bash
+
+aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ node simpleChain04ValidateChain.js
+***** generateGenesisBlock NO GENESIS BLOCK CREATED - BLOCKS EXIST
+######## The chain is not valid:
+Block 5 failed validateBlock
+Block 6 failed validateBlock
+
 
 ```
