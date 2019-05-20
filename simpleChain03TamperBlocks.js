@@ -36,10 +36,10 @@ myBlockChain.getBlock(5).then((block) => {
     blockAux.body = "Tampered Block";
     myBlockChain._modifyBlock(blockAux.height, blockAux)
         .then((blockModified) => {
+            console.log(" MODIFY BLOCK 5 ");
             if (blockModified) {
                 myBlockChain.validateBlock(blockAux.height)
                     .then((valid) => {
-                        console.log(" MODIFY BLOCK 5 ");
                         console.log(`######## Block #${blockAux.height}, is valid? = ${valid}`);
                         //myBlockChain._printAllBlocks();
                     })
