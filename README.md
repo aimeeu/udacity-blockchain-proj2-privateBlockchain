@@ -22,6 +22,10 @@ I broke simpleChain.js into three files for easier testing:
 
 ## Clone and Install
 
+```$ git clone https://github.com/aimeeu/udacity-blockchain-proj2-privateBlockchain.git```
+
+```$ npm install```
+
 ```bash
 
 aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test$  git clone https://github.com/aimeeu/udacity-blockchain-proj2-privateBlockchain.git
@@ -55,6 +59,8 @@ added 78 packages from 60 contributors in 1.011s
 ```
 
 ## Populate Chain
+
+```$ node simpleChain01PopulateChain.js```
 
 ``` bash
 
@@ -94,9 +100,13 @@ true
 ```
 
 ## Validate Blocks
+
+```$ node simpleChain02ValidateBlocks.js```
+
 ```bash 
 
-aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ node simpleChain02ValidateBlocks.js######## simpleChain myBlockChain.getBlock(0) FULFILLED block:  { data: 'This is the Genesis Block',
+aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ node simpleChain02ValidateBlocks.js
+######## simpleChain myBlockChain.getBlock(0) FULFILLED block:  { data: 'This is the Genesis Block',
   height: 0,
   timestamp: '1558380070',
   previousBlockHash: 0,
@@ -110,6 +120,9 @@ aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-priv
 ```
 
 ## Validate Chain
+
+```$ node simpleChain04ValidateChain.js```
+
 ```bash
 
 aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ node simpleChain04ValidateChain.js
@@ -119,6 +132,9 @@ aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-priv
 ```
 
 ## Tamper with Blocks
+
+```$ node simpleChain03TamperBlocks.js```
+
 ```bash
 
 aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ node simpleChain03TamperBlocks.js
@@ -131,6 +147,9 @@ aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-priv
 ```
 
 ## Validate Chain
+
+```$ node simpleChain04ValidateChain.js```
+
 ```bash
 
 aimee@aimee-lemur:~/Dev/git/github.com/aimeeu/test/udacity-blockchain-proj2-privateBlockchain$ node simpleChain04ValidateChain.js
