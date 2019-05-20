@@ -41,7 +41,7 @@ myBlockChain.getBlock(5).then((block) => {
                     .then((valid) => {
                         console.log(" MODIFY BLOCK 5 ");
                         console.log(`######## Block #${blockAux.height}, is valid? = ${valid}`);
-                        myBlockChain._printAllBlocks();
+                        //myBlockChain._printAllBlocks();
                     })
                     .catch((error) => {
                         console.log(error);
@@ -62,11 +62,11 @@ myBlockChain.getBlock(6).then((block) => {
     myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
         console.log(" MODIFY BLOCK 6 ");
         if (blockModified) {
-            console.log("######## The Block was modified");
+            console.log("######## BLOCK 6 was modified");
         } else {
-            console.log("######## The Block wasn't modified");
+            console.log("######## BLOCK 6 wasn't modified");
         }
-        myBlockChain._printAllBlocks();
+        //myBlockChain._printAllBlocks();
     }).catch((err) => {
         console.log(err);
     });
