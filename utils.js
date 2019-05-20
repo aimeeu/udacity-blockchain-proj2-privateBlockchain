@@ -27,4 +27,30 @@ const generateHashFor = (newBlock) => {
     return SHA256(JSON.stringify(newBlock)).toString();
 };
 
-module.exports = {getDateAsUTCString, generateHashFor};
+//https://alligator.io/js/array-sort-numbers/
+const sortNumericalArrayItemsAscending = (a, b) => {
+    if (a > b) {
+        return 1;
+    } else if (b > a) {
+        return -1;
+    } else {
+        return 0;
+    }
+};
+
+const sortNumericalArrayItemsDescending = (a, b) => {
+    if (a > b) {
+        return -1;;
+    } else if (b > a) {
+        return 1;
+    } else {
+        return 0;
+    }
+};
+
+module.exports = {
+    getDateAsUTCString,
+    generateHashFor,
+    sortNumericalArrayItemsAscending,
+    sortNumericalArrayItemsDescending
+};

@@ -69,8 +69,8 @@ class Blockchain {
     }
 
     // Get block height, it is a helper method that return the height of the blockchain
-    // Counts all the Blocks in your chain and give you as a result the last height in your chain
-    // the genesisBlock has a height of zero, so the last block in the chain will have a height of (totalChainLength - 1)
+    // result is the last height in your chain
+    // the genesisBlock has a height of zero, so the last block in the chain should have a height of (totalChainLength - 1)
     // MUST RETURN A PROMISE FOR simpleChain02ValidateBlocks.js
     getBlockHeight() {
        // console.log('***** getBlockHeight *****');
@@ -78,13 +78,22 @@ class Blockchain {
         return new Promise(function(resolve, reject) {
             // Add your code here, remember in Promises you need to resolve() or reject()
             //first get block
-            let blockHeight = 0;
-
             //console.log('***** getBlockHeight calling levelSandbox.getBlockHeight *****');
-            self.bd.getBlockHeight().then((result) => {
+            self.bd.getBlockHeight().then((blockHeight) => {
                 //console.log('getBlockHeight logging result: ', result);
-                blockHeight = result;
                 resolve(blockHeight);
+            }).catch((err) => {
+                console.log(" getBlockHeight error: ", err);
+                reject(err);
+            });
+        });
+    }
+
+    getTotalNumBlocksInChain() {
+        let self = this;
+        return new Promise(function(resolve, reject) {
+            self.bd.getNumBlocksInChain().then((totalNumBlocks) => {
+                resolve(totalNumBlocks);
             }).catch((err) => {
                 console.log(" getBlockHeight error: ", err);
                 reject(err);
@@ -99,17 +108,15 @@ class Blockchain {
     // must return a Promise to work with simpleChain02ValidateBlocks.js
     addBlock(newBlock) {
         let self = this;
-        //console.log('***** blockchain.addBlock(block) ***** ');
+        console.log('***** blockchain.addBlock(block): ', newBlock);
         // Add your code here
         // fetch previous block to get hash
 
         return new Promise(function(resolve, reject) {
             // Add your code here, remember in Promises you need to resolve() or reject()
-            let blockHeight = undefined;
-            let previousBlockHash = undefined;
            // console.log('***** blockchain.addBlock(block) calling self.getBlockHeight ***** ');
             self.getBlockHeight().then((blockHeight) => {
-               // console.log('blockchain.addBlock(block) self.getBlockHeight blockHeight: ', blockHeight);
+               //console.log('blockchain.addBlock(block) self.getBlockHeight blockHeight: ', blockHeight);
 
                 // get the block by blockHeight in order to set previousBlockHash
                 self.getBlock(blockHeight).then((returnedBlock) => {
@@ -238,21 +245,25 @@ class Blockchain {
                         reject(err);
                     });
                 } else {
-                    let totalBlocks = (blockHeight + 1);
+
                     self.bd.getAllBlocks().then((chainMap) => {
-                        if (chainMap.length === 0) {
+                        if (chainMap.size === 0) {
                             let msg = "blockchain.validateChain retrieve all blocks returned an empty map!";
                             //console.log(msg);
                             errorLog.push(msg);
                             reject(errorLog);
                         }else {
-                            for (var [key, currentBlock] of chainMap) {
-                                // validate block
+                            let keys = Array.from(chainMap.keys());
+                            keys.sort(utils.sortNumericalArrayItemsAscending);
+                            // 11 blocks in array; blockHeight is 10;
+                            for (let i = 0; i < keys.length; i++) {
+                                let key = keys[i];
+                                let currentBlock = chainMap.get(key);
                                 let isValidBlock = self.checkForValidBlockHash(currentBlock);
                                 if (isValidBlock) {
                                     // compare currentBlockHash with nextBlock's previousBlockHash
                                     // make sure this is not the end of the chain
-                                    if (key !== totalBlocks) {
+                                    if (key !== blockHeight) {
                                         let nextKey = (key + 1);
                                         let nextBlock = chainMap.get(nextKey);
                                         if (currentBlock.hash === nextBlock.previousBlockHash) {
@@ -279,7 +290,7 @@ class Blockchain {
                     });
                 }
             }).catch( (err) => {
-                console.log("blockchain.validateChain Failed to retrieve blockHeight");
+                console.log("blockchain.validateChain Failed to retrieve blockHeight ", err);
                 reject(err);
             });
         });

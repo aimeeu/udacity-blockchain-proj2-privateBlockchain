@@ -23,6 +23,7 @@
 /===================================================*/
 
 const level = require('level');
+const utils = require('./utils.js');
 
 
 class LevelSandbox {
@@ -78,7 +79,7 @@ class LevelSandbox {
             self.db.put(key, value).then((result) => {
                 // result is always undefined
                 // console.log('LevelSandbox.addBlock(newBlock) result: ', result);
-                resolve(newBlock);
+                resolve(true);
             }).catch((err) => {
                 //console.log('LevelSandbox.addBlock failed to add block ' + key + ' ; error: ', err);
                 reject(err);
@@ -87,15 +88,19 @@ class LevelSandbox {
     };
 
 
-    /*
-    // Method that return the height
-    getBlocksCount() {
+
+    // Method that returns the total number of blocks in the chain (this is NOT the height of the last block!)
+    getNumBlocksInChain() {
         let self = this;
-        return new Promise(function(resolve, reject){
-            // Add your code here, remember in Promises you need to resolve() or reject()
+        return new Promise((resolve, reject) => {
+            self.fetchMapOfBlocks().then((chainMap) => {
+                resolve(chainMap.size);
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
-    */
+
 
 
     //Rubric: getBlock(height) retrieves a block by height from LevelDB
@@ -142,51 +147,30 @@ class LevelSandbox {
     }
     */
 
-
     getBlockHeight() {
-        //console.log('***** LevelSandbox.getBlockHeight *****');
         let self = this;
         return new Promise((resolve, reject) => {
-            // The Map object holds key-value pairs and remembers the original insertion order of the keys.
-            let map = new Map();
-            //console.log('***** LevelSandbox.getBlockHeight db.createReadStream({reverse: true})*****');
-            self.db.createReadStream({reverse: true})
-                .on('data', function (data) {
-                   // console.log('***** LevelSandbox.getBlockHeight data found; reading stream');
-                    //console.log(data.key, '=', data.value);
-                    map.set(Number.parseInt((data.key), JSON.parse(data.value)));
-                })
-                .on('error', function (err) {
-                    if (err.type === 'NotFoundError') {
-                       // console.log('***** LevelSandbox.getBlockHeight no data found; resolve(0)');
-                        resolve(0);
-                    } else {
-                        //console.log('LevelSandbox.getAllBlocks Unable to read data stream!', err);
-                        reject(err);
-                    }
-                })
-                .on('close', function () {
-                    //console.log('***** LevelSandbox.getBlockHeight stream closed; getting blockHeight from first key in map');
-                    let blockHeight = 0;
-                    // retrieve the first entry in the map, which should be the last block added to the database
-                    if (map.size !== 0) {
-                        var iterator1 = map.keys();
-                        blockHeight = Number.parseInt(iterator1.next().value);
-                        //console.log("LevelSandbox.getBlockHeight map keys, first key: ", blockHeight);
-                    }
-                    resolve(blockHeight);
-                })
-                .on('end', function () {
-                    //console.log('***** LevelSandbox.getBlockHeight stream ended');
-                });
+            self.fetchMapOfBlocks().then((chainMap) => {
+               let blockHeight = 0;
+               if (chainMap.size > 0) {
+                   let keys = Array.from(chainMap.keys());
+                   keys.sort(utils.sortNumericalArrayItemsAscending);
+                   blockHeight = keys.pop();
+               }
+               resolve(blockHeight);
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
 
-    // returns a map of key, value for all the blocks in the database
     getAllBlocks() {
-        //console.log('***** LevelSandbox.getAllBlocks *****');
+        return this.fetchMapOfBlocks();
+    }
+
+    fetchMapOfBlocks() {
         let self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise( (resolve, reject) => {
             // The Map object holds key-value pairs and remembers the original insertion order of the keys.
             let map = new Map();
             self.db.createReadStream({reverse: false})

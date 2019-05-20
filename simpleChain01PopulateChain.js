@@ -30,6 +30,9 @@ const Block = require('./Block.js');
 
 let myBlockChain = new BlockChain.Blockchain();
 
+
+
+
 setTimeout(function () {
     //console.log("***** simpleChain.setTimeout ...")
 }, 10000);

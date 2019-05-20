@@ -36,11 +36,14 @@ let myBlockChain = new BlockChain.Blockchain();
  ** Function to get the Height of the Chain ****
  ***********************************************/
 
+myBlockChain.getTotalNumBlocksInChain().then((totalNum) => {
+    console.log("######## simpleChain myBlockChain.getTotalNumBlocksInChain() FULFILLED totalNumBlocksInChain: ", totalNum);
+}).catch((err) => { console.log(err);});
+
 
 // Be careful this only will work if `getBlockHeight` method in Blockchain.js file return a Promise
 myBlockChain.getBlockHeight().then((height) => {
-	console.log("######## simpleChain myBlockChain.getBlockHeight() FULFILLED ########");
-	console.log(height);
+	console.log("######## simpleChain myBlockChain.getBlockHeight() FULFILLED height: ", height);
 }).catch((err) => { console.log(err);});
 
 /***********************************************
@@ -50,8 +53,7 @@ myBlockChain.getBlockHeight().then((height) => {
 
 // Be careful this only will work if `getBlock` method in Blockchain.js file return a Promise
 myBlockChain.getBlock(0).then((block) => {
-	console.log("######## simpleChain myBlockChain.getBlock(0) FULFILLED ########");
-	console.log(JSON.stringify(block));
+	console.log("######## simpleChain myBlockChain.getBlock(0) FULFILLED block: ", block);
 }).catch((err) => { console.log(err);});
 
 
@@ -62,8 +64,7 @@ myBlockChain.getBlock(0).then((block) => {
 
 // Be careful this only will work if `validateBlock` method in Blockchain.js file return a Promise
 myBlockChain.validateBlock(0).then((valid) => {
-	console.log("######## simpleChain myBlockChain.validateBlock FULFILLED ########");
-	console.log(valid);
+	console.log("######## simpleChain myBlockChain.validateBlock FULFILLED valid: ", valid);
 })
 .catch((error) => {
 	console.log(error);
