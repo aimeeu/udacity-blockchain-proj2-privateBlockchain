@@ -20,13 +20,6 @@ I broke simpleChain.js into three files for easier testing:
 
 # How to Install and Run the Code
 
-1. Clone this repository and run npm install
-2. Populate chain: run simpleChain01PopulateChain.js 
-3. Validate blocks: run simpleChain02ValidateBlocks.js 
-4. Validate chain: run simpleChain04ValidateChain.js 
-5. Tamper with blocks: run simpleChain03TamperBlocks.js
-6. Validate chain in invalid: run simpleChain04ValidateChain.js
-
 ## Clone and Install
 
 ```bash
